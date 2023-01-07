@@ -10,9 +10,13 @@ class MainViewModel : ViewModel() {
 
     private val retrofit = RetrofitHelper.getInstance().create(MainRepository::class.java)
 
-    private val _astronautCounts = mutableStateOf(0)
-    val astronautCounts: MutableState<Int>
-        get() = _astronautCounts
+    private val _astronautCount = mutableStateOf(0)
+    val astronautCount: MutableState<Int>
+        get() = _astronautCount
+
+    private val _astronautList = mutableListOf<Astronaut>()
+    val astronautList: MutableList<Astronaut>
+        get() = _astronautList
 
     fun getAstronauts() {
         viewModelScope.launch {
@@ -20,7 +24,9 @@ class MainViewModel : ViewModel() {
 
             if (result.isSuccessful) {
                 result.body()?.let {
-                    _astronautCounts.value = it.number
+                    _astronautCount.value = it.number
+                    _astronautList.clear()
+                    _astronautList.addAll(it.people)
                 }
             }
         }
