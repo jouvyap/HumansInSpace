@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bravostudio.humansinspace.ui.theme.HumansInSpaceTheme
 import kotlinx.coroutines.launch
-import java.lang.Math.random
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -57,13 +59,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
     viewModel.getAstronauts()
 
     val scope = rememberCoroutineScope()
-    val infiniteTransitionScaAst = rememberInfiniteTransition()
-    val infiniteTransitionRotAst = rememberInfiniteTransition()
     val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
-
-
-
-
 
     ModalBottomSheetLayout(
         sheetContent = { BottomSheetContent(astronautList) },
@@ -102,23 +98,53 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 .background(Color.Black)
             ) {
 
+                Image(
+                    painter = painterResource(id = R.drawable.background),
+                    contentDescription = "background image",
+                    contentScale = ContentScale.FillHeight
+                )
+
                 CreateEarth(modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(Alignment.BottomCenter)
+                    .offset(y = 150.dp)
                     .size(300.dp))
 
-                CreateAstronaut(modifier = Modifier.align(Alignment.TopCenter))
-                CreateAstronaut(modifier = Modifier.align(Alignment.TopStart))
-                CreateAstronaut(modifier = Modifier.align(Alignment.TopEnd))
+                CreateAstronaut(
+                    // TODO RANDOMIZE OFFSET
+                    modifier = Modifier.align(Alignment.CenterStart)
+                )
+
+                CreateAstronaut(
+                    // TODO RANDOMIZE OFFSET
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
+                CreateAstronaut(
+                    // TODO RANDOMIZE OFFSET
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
 
 
                 if (astronautCount > 0) {
-                    Text(
-                        text = "" + astronautCount,
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 16.dp)
+                            .border(
+                                2.dp,
+                                color = Color.White,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    ) {
+                        Text(
+                            text = "$astronautCount Humans",
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
+
                 }
             }
         }
@@ -133,7 +159,7 @@ fun CreateEarth(modifier: Modifier) {
         initialValue = 0f,
         targetValue = 360f,
         animationSpec = infiniteRepeatable(
-            animation = tween(30000, easing = LinearEasing),
+            animation = tween(40000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         )
     )
@@ -147,22 +173,31 @@ fun CreateEarth(modifier: Modifier) {
 
 @Composable
 fun CreateAstronaut(modifier: Modifier) {
-    val infiniteTransitionScale = rememberInfiniteTransition()
-    val infiniteTransitionRotation = rememberInfiniteTransition()
-    val scale by infiniteTransitionScale.animateFloat(
+    val infiniteTransition = rememberInfiniteTransition()
+
+    val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.2f,
+        targetValue = 1.3f,
         animationSpec = infiniteRepeatable(
-            animation = tween(Random.nextInt(2000, 4000)),
+            animation = tween(Random.nextInt(2500, 3500)),
             repeatMode = RepeatMode.Reverse
         )
     )
 
-    val rotationAstronaut by infiniteTransitionRotation.animateFloat(
+    val rotationAstronaut by infiniteTransition.animateFloat(
         initialValue = -20f,
         targetValue = 20f,
         animationSpec = infiniteRepeatable(
-            animation = tween(Random.nextInt(3000, 5000)),
+            animation = tween(Random.nextInt(3500, 5000)),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val offsetY by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 100f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(Random.nextInt(5000, 10000)),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -173,6 +208,7 @@ fun CreateAstronaut(modifier: Modifier) {
         modifier = modifier
             .scale(scale)
             .rotate(rotationAstronaut)
+            .absoluteOffset(y = offsetY.roundToInt().dp)
     )
 }
 
