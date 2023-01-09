@@ -7,6 +7,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -107,20 +108,24 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                 CreateEarth(modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .offset(y = 150.dp)
-                    .size(300.dp))
+                    .size(350.dp))
+
+                CreateSatellite(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .offset(x = (-25).dp, y = 80.dp)
+                        .size(100.dp)
+                )
 
                 CreateAstronaut(
-                    // TODO RANDOMIZE OFFSET
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
 
                 CreateAstronaut(
-                    // TODO RANDOMIZE OFFSET
                     modifier = Modifier.align(Alignment.Center)
                 )
 
                 CreateAstronaut(
-                    // TODO RANDOMIZE OFFSET
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
 
@@ -135,9 +140,12 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                                 color = Color.White,
                                 shape = RoundedCornerShape(10.dp)
                             )
+                            .clickable {
+                                scope.launch { modalBottomSheetState.show() }
+                            }
                     ) {
                         Text(
-                            text = "$astronautCount Humans",
+                            text = "$astronautCount humans",
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
@@ -179,25 +187,25 @@ fun CreateAstronaut(modifier: Modifier) {
         initialValue = 1f,
         targetValue = 1.3f,
         animationSpec = infiniteRepeatable(
-            animation = tween(Random.nextInt(2500, 3500)),
+            animation = tween(Random.nextInt(2000, 4000)),
             repeatMode = RepeatMode.Reverse
         )
     )
 
-    val rotationAstronaut by infiniteTransition.animateFloat(
+    val rotation by infiniteTransition.animateFloat(
         initialValue = -20f,
         targetValue = 20f,
         animationSpec = infiniteRepeatable(
-            animation = tween(Random.nextInt(3500, 5000)),
+            animation = tween(Random.nextInt(3000, 6000)),
             repeatMode = RepeatMode.Reverse
         )
     )
 
     val offsetY by infiniteTransition.animateFloat(
-        initialValue = 0f,
+        initialValue = -100f,
         targetValue = 100f,
         animationSpec = infiniteRepeatable(
-            animation = tween(Random.nextInt(5000, 10000)),
+            animation = tween(Random.nextInt(3000, 10000)),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -207,8 +215,37 @@ fun CreateAstronaut(modifier: Modifier) {
         contentDescription = "astronaut image",
         modifier = modifier
             .scale(scale)
-            .rotate(rotationAstronaut)
+            .rotate(rotation)
             .absoluteOffset(y = offsetY.roundToInt().dp)
+    )
+}
+
+@Composable
+fun CreateSatellite(modifier: Modifier) {
+    val infiniteTransition = rememberInfiniteTransition()
+
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 25f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(5000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Image(
+        painter = painterResource(id = R.drawable.satellite),
+        contentDescription = "satellite image",
+        modifier = modifier.scale(scale).rotate(rotation)
     )
 }
 
