@@ -3,6 +3,9 @@ Humans in Space Android Mobile Application
 
 The "Humans in Space" Android app provides real-time information about the number of humans currently in space. Stay updated with the latest data on astronauts and cosmonauts orbiting our planet.
 
+![Screenshot_20231008_215847](https://github.com/jouvyap/HumansInSpace/assets/7111281/c76da898-616e-44df-8947-196666e4fdb8)
+![Screenshot_20231008_215906](https://github.com/jouvyap/HumansInSpace/assets/7111281/1282d2c8-2d0b-44ee-b8e5-3ea17d5b8721)
+
 ## Features
 
 - **Real-Time Data:** Get up-to-the-minute information about the number of humans in space.
